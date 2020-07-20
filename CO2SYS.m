@@ -1806,10 +1806,20 @@ while any(nF)
     HF        = TFF./(1 + KFF./Hfree); % since KF is on the free scale
     Residual  = TAi - CAlk - BAlk - OH - PAlk - SiAlk  - AmmAlk - HSAlk + Hfree + HSO4 + HF;
     % find Slope dTA/dpH;
-    % (this is not exact, but keeps all important terms);
-    Slope     = ln10.*(TCi.*K1F.*H.*(H.*H + K1F.*K2F + 4.*H.*K2F)./Denom./Denom + BAlk.*H./(KBF + H) + OH + H);
+    Slope     = ln10.*(TCi.*K1F.*H.*(H.*H+K1F.*K2F+4.*H.*K2F)./Denom./Denom+... % CAlk
+                BAlk.*H./(KBF + H)+OH+H+... % BAlk, OH, H
+                (TPF.*H.*KP1F.*(H.^4+4.*KP2F.*H.^3+(9.*KP2F.*KP3F+KP1F.*KP2F).*H.^2+4.*...
+                KP1F.*KP2F.*KP3F.*H+KP1F.*KP2F.^2.*KP3F)./(H.^3+KP1F.*H.^2+KP1F.*KP2F.*H+KP1F.*...
+                KP2F.*KP3F).^2)+... % PAlk
+                SiAlk.*H./(H+KSiF)+... % SiAlk
+                AmmAlk.*H./(H+KNH4F)+... % NH3Alk
+                HSAlk.*H./(H+KH2SF)+... % HSAlk
+                HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
+                HF.*Hfree./(Hfree+KFF)); % HFAlk
+    
+%   Above is the slope equation including all terms, below includes only largest terms
     deltapH   = Residual./Slope; %' this is Newton's method
-    % ' to keep the jump from being too big:
+    % to keep the jump from being too big:
     while any(abs(deltapH) > 1)
         FF=abs(deltapH)>1; deltapH(FF)=deltapH(FF)./2;
     end
@@ -1915,9 +1925,19 @@ while any(nF)
     HSO4      = TSF./(1 + KSF./Hfree); %' since KS is on the free scale
     HF        = TFF./(1 + KFF./Hfree);% ' since KF is on the free scale
     Residual  = TAi - CAlk - BAlk - OH - PAlk - SiAlk - AmmAlk - HSAlk + Hfree + HSO4 + HF;
-    % '               find Slope dTA/dpH
-    % '               (this is not exact, but keeps all important terms):
-    Slope     = ln10.*(HCO3 + 4.*CO3 + BAlk.*H./(KBF + H) + OH + H);
+    % find Slope dTA/dpH
+    Slope     = ln10.*(HCO3 + 4.*CO3+... % CAlk
+                BAlk.*H./(KBF + H)+OH+H+... % BAlk, OH, H
+                (TPF.*H.*KP1F.*(H.^4+4.*KP2F.*H.^3+(9.*KP2F.*KP3F+KP1F.*KP2F).*H.^2+4.*...
+                KP1F.*KP2F.*KP3F.*H+KP1F.*KP2F.^2.*KP3F)./(H.^3+KP1F.*H.^2+KP1F.*KP2F.*H+KP1F.*...
+                KP2F.*KP3F).^2)+... % PAlk
+                SiAlk.*H./(H+KSiF)+... % SiAlk
+                AmmAlk.*H./(H+KNH4F)+... % NH3Alk
+                HSAlk.*H./(H+KH2SF)+... % HSAlk
+                HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
+                HF.*Hfree./(Hfree+KFF)); % HFAlk
+%   Above is the slope equation including all terms, below includes only largest terms
+
     deltapH   = Residual./Slope; %' this is Newton's method
     % ' to keep the jump from being too big:
     while any(abs(deltapH) > 1)
@@ -2081,9 +2101,19 @@ while any(nF)
     HSO4      = TSF./(1 + KSF./Hfree); %' since KS is on the free scale
     HF        = TFF./(1 + KFF./Hfree);% ' since KF is on the free scale
     Residual  = TAi - CAlk - BAlk - OH - PAlk - SiAlk - AmmAlk - HSAlk + Hfree + HSO4 + HF;
-    % '               find Slope dTA/dpH
-    % '               (this is not exact, but keeps all important terms):
-    Slope = ln10 .* (2 .* HCO3i .* K2F ./ H + BAlk .* H ./ (KBF + H) + OH + H);
+    % find Slope dTA/dpH
+    Slope     = ln10.*(2.*HCO3i.*K2F./H+... % CAlk
+                BAlk.*H./(KBF + H)+OH+H+... % BAlk, OH, H
+                (TPF.*H.*KP1F.*(H.^4+4.*KP2F.*H.^3+(9.*KP2F.*KP3F+KP1F.*KP2F).*H.^2+4.*...
+                KP1F.*KP2F.*KP3F.*H+KP1F.*KP2F.^2.*KP3F)./(H.^3+KP1F.*H.^2+KP1F.*KP2F.*H+KP1F.*...
+                KP2F.*KP3F).^2)+... % PAlk
+                SiAlk.*H./(H+KSiF)+... % SiAlk
+                AmmAlk.*H./(H+KNH4F)+... % NH3Alk
+                HSAlk.*H./(H+KH2SF)+... % HSAlk
+                HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
+                HF.*Hfree./(Hfree+KFF)); % HFAlk
+%   Above is the slope equation including all terms, below includes only largest terms
+%   Slope = ln10 .* (2 .* HCO3i .* K2F ./ H + BAlk .* H ./ (KBF + H) + OH + H);
     deltapH   = Residual./Slope; %' this is Newton's method
     % ' to keep the jump from being too big:
     while any(abs(deltapH) > 1)
@@ -2227,9 +2257,19 @@ while any(nF)
     HSO4      = TSF./(1 + KSF./Hfree); %' since KS is on the free scale
     HF        = TFF./(1 + KFF./Hfree);% ' since KF is on the free scale
     Residual  = TAi - CAlk - BAlk - OH - PAlk - SiAlk - AmmAlk - HSAlk + Hfree + HSO4 + HF;
-    % '               find Slope dTA/dpH
-    % '               (this is not exact, but keeps all important terms):
-    Slope = ln10 .* (-CO3i .* H ./ K2F + BAlk .* H ./ (KBF + H) + OH + H);
+    % find Slope dTA/dpH
+    Slope     = ln10.*(-CO3i.*H./K2F+... % CAlk
+                BAlk.*H./(KBF + H)+OH+H+... % BAlk, OH, H
+                (TPF.*H.*KP1F.*(H.^4+4.*KP2F.*H.^3+(9.*KP2F.*KP3F+KP1F.*KP2F).*H.^2+4.*...
+                KP1F.*KP2F.*KP3F.*H+KP1F.*KP2F.^2.*KP3F)./(H.^3+KP1F.*H.^2+KP1F.*KP2F.*H+KP1F.*...
+                KP2F.*KP3F).^2)+... % PAlk
+                SiAlk.*H./(H+KSiF)+... % SiAlk
+                AmmAlk.*H./(H+KNH4F)+... % NH3Alk
+                HSAlk.*H./(H+KH2SF)+... % HSAlk
+                HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
+                HF.*Hfree./(Hfree+KFF)); % HFAlk
+%   Above is the slope equation including all terms, below includes only largest terms
+%   Slope = ln10 .* (-CO3i .* H ./ K2F + BAlk .* H ./ (KBF + H) + OH + H);
     deltapH   = Residual./Slope; %' this is Newton's method
     % ' to keep the jump from being too big:
     while any(abs(deltapH) > 1)
