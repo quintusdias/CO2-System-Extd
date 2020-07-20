@@ -1816,8 +1816,8 @@ while any(nF)
                 HSAlk.*H./(H+KH2SF)+... % HSAlk
                 HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
                 HF.*Hfree./(Hfree+KFF)); % HFAlk
-    
 %   Above is the slope equation including all terms, below includes only largest terms
+%   Slope     = ln10.*(TCi.*K1F.*H.*(H.*H + K1F.*K2F + 4.*H.*K2F)./Denom./Denom + BAlk.*H./(KBF + H) + OH + H);
     deltapH   = Residual./Slope; %' this is Newton's method
     % to keep the jump from being too big:
     while any(abs(deltapH) > 1)
@@ -1937,7 +1937,7 @@ while any(nF)
                 HSO4.*Hfree./(Hfree+KSF)+... % HSO4Alk
                 HF.*Hfree./(Hfree+KFF)); % HFAlk
 %   Above is the slope equation including all terms, below includes only largest terms
-
+%   Slope     = ln10.*(HCO3 + 4.*CO3 + BAlk.*H./(KBF + H) + OH + H);
     deltapH   = Residual./Slope; %' this is Newton's method
     % ' to keep the jump from being too big:
     while any(abs(deltapH) > 1)
